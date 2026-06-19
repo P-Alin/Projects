@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alin-Dorin PATA – Portfolio Data Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0a0e1a; --navy-2: #111827; --navy-3: #1a2236; --navy-4: #243050;
+    --teal: #00d4b4; --teal-dim: #00a896;
+    --teal-faint: rgba(0,212,180,0.08); --teal-faint2: rgba(0,212,180,0.14);
+    --text: #e8edf5; --text-muted: #8b95a8; --text-dim: #5c6880;
+    --border: rgba(255,255,255,0.07); --border-teal: rgba(0,212,180,0.25);
+    --font: 'Space Grotesk', sans-serif; --mono: 'JetBrains Mono', monospace;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--navy); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,212,180,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,180,0.03) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,14,26,0.85); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 56px;
+  }
+  .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--teal); letter-spacing: 0.05em; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--teal); }
+  main { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  .hero { padding: 130px 0 100px; display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,212,180,0.1); border: 1px solid var(--border-teal);
+    border-radius: 99px; padding: 4px 12px;
+    font-family: var(--mono); font-size: 11px; color: var(--teal);
+    margin-bottom: 1rem; letter-spacing: 0.05em;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 12px; color: var(--teal);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--teal); }
+  .hero h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .hero h1 span { color: var(--teal); }
+  .hero-desc { font-size: 1.05rem; color: var(--text-muted); max-width: 520px; line-height: 1.75; margin-bottom: 1.75rem; }
+  .hero-stats { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .hero-stat-num { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; color: var(--teal); line-height: 1; display: block; }
+  .hero-stat-label { font-size: 0.78rem; color: var(--text-dim); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; display: block; }
+  .hero-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--teal); color: var(--navy); padding: 10px 22px;
+    border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text); padding: 10px 22px;
+    border-radius: var(--radius-sm); border: 1px solid var(--border-teal);
+    font-family: var(--font); font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .btn-ghost:hover { background: var(--teal-faint); transform: translateY(-1px); }
+  .hero-viz { width: 220px; display: flex; flex-direction: column; gap: 8px; }
+  .viz-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 2px; }
+  .bar-track { height: 6px; background: var(--navy-4); border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; background: var(--teal); animation: barIn 1.2s cubic-bezier(.22,1,.36,1) both; transform-origin: left; }
+  @keyframes barIn { from{transform:scaleX(0);opacity:0} to{transform:scaleX(1);opacity:1} }
+
+  /* SECTION */
+  .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+  .section-tag {
+    font-family: var(--mono); font-size: 11px; color: var(--teal);
+    background: var(--teal-faint2); border: 1px solid var(--border-teal);
+    padding: 3px 10px; border-radius: 99px; letter-spacing: 0.08em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  section { padding: 80px 0; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; align-items: start; }
+  .about-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; }
+  .about-card h2 { font-size: 1.5rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
+  .about-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.75; margin-bottom: 0.85rem; }
+  .about-card p:last-of-type { margin-bottom: 0; }
+  .about-langs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.25rem; }
+  .lang-chip { font-family: var(--mono); font-size: 11px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border-teal); background: var(--teal-faint); color: var(--teal); }
+  .interest-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .interest-item { background: var(--navy-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; border-left: 3px solid var(--teal); }
+  .interest-item h4 { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 0.03em; margin-bottom: 0.4rem; text-transform: uppercase; font-family: var(--mono); }
+  .interest-item p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* SKILLS */
+  .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .skill-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.25rem; transition: border-color 0.2s, background 0.2s; }
+  .skill-card:hover { border-color: var(--border-teal); background: var(--navy-3); }
+  .skill-card-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--teal-faint2); border: 1px solid var(--border-teal); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; color: var(--teal); }
+  .skill-card h3 { font-size: 0.85rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--mono); margin-bottom: 0.85rem; }
+  .skill-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .skill-card li { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+  .skill-card li::before { content: '›'; color: var(--teal); font-weight: 600; flex-shrink: 0; }
+
+  /* PROJECTS */
+  .projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .project-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+  .project-card:hover { border-color: var(--border-teal); }
+  .project-header { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; padding: 1.75rem 1.75rem 1.5rem; cursor: pointer; }
+  .project-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem; flex-wrap: wrap; }
+  .proj-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 9px; border-radius: 99px; border: 1px solid; }
+  .tag-viz { color: #c084fc; border-color: rgba(192,132,252,0.3); background: rgba(192,132,252,0.07); }
+  .tag-sql { color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.07); }
+  .tag-stats { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.07); }
+  .tag-ts { color: #34d399; border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.07); }
+  .tag-py { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+  .tag-ml { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.07); }
+  .project-num { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .project-header h3 { font-size: 1.2rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.6rem; }
+  .project-header h3 span { color: var(--teal); }
+  .project-summary { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; max-width: 680px; }
+  .project-toggle { background: var(--navy-3); border: 1px solid var(--border); border-radius: var(--radius-sm); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-muted); font-size: 18px; transition: color 0.2s, background 0.2s, transform 0.2s; cursor: pointer; user-select: none; }
+  .project-toggle.open { color: var(--teal); background: var(--teal-faint2); transform: rotate(45deg); }
+  .project-body { display: none; border-top: 1px solid var(--border); padding: 1.75rem; }
+  .project-body.open { display: block; }
+  .project-detail-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.75rem; }
+  .detail-section h4 { font-family: var(--mono); font-size: 11px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .detail-section p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.75rem; }
+  .detail-section ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .detail-section li { font-size: 0.875rem; color: var(--text-muted); display: flex; gap: 8px; line-height: 1.5; }
+  .detail-section li::before { content: '→'; color: var(--teal); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+  .skill-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem; }
+  .chip { font-family: var(--mono); font-size: 11px; color: var(--text-muted); background: var(--navy-4); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px 10px; }
+  .proj-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--teal); text-decoration: none; border: 1px solid var(--border-teal); background: var(--teal-faint); padding: 6px 14px; border-radius: var(--radius-sm); margin-top: 1.25rem; transition: background 0.2s; }
+  .proj-link:hover { background: var(--teal-faint2); }
+
+  /* STAGE */
+  .stage-card { background: var(--navy-2); border: 1px solid var(--border-teal); border-radius: var(--radius); overflow: hidden; }
+  .stage-header { background: linear-gradient(135deg, var(--navy-3), var(--navy-4)); padding: 1.75rem; display: flex; align-items: flex-start; gap: 1.25rem; justify-content: space-between; flex-wrap: wrap; }
+  .stage-company { display: flex; align-items: center; gap: 1rem; }
+  .stage-logo { width: 44px; height: 44px; border-radius: var(--radius-sm); background: #009900; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+  .stage-title h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+  .stage-title h3 span { color: var(--teal); }
+  .stage-title p { font-size: 0.85rem; color: var(--text-muted); font-family: var(--mono); }
+  .stage-badge { font-family: var(--mono); font-size: 11px; background: var(--teal-faint2); border: 1px solid var(--border-teal); color: var(--teal); padding: 4px 12px; border-radius: 99px; white-space: nowrap; align-self: flex-start; }
+  .cr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .cr-item { background: var(--navy-2); padding: 1.25rem; transition: background 0.2s; }
+  .cr-item:hover { background: var(--navy-3); }
+  .cr-label { font-family: var(--mono); font-size: 10px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .cr-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text); }
+  .cr-bullets { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .cr-bullets li { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 6px; line-height: 1.4; }
+  .cr-bullets li::before { content: '·'; color: var(--teal); flex-shrink: 0; font-weight: 700; }
+
+  /* OBJECTIVE */
+  .objective-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .obj-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; }
+  .obj-card-eyebrow { font-family: var(--mono); font-size: 10px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.85rem; }
+  .obj-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.85rem; line-height: 1.4; }
+  .obj-sub-card { background: var(--navy-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1rem; }
+  .obj-sub-card:last-child { margin-bottom: 0; }
+  .obj-sub-card h4 { font-family: var(--mono); font-size: 11px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .obj-list li { font-size: 0.875rem; color: var(--text-muted); display: flex; gap: 8px; line-height: 1.5; }
+  .obj-list li::before { content: '→'; color: var(--teal); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+  .roadmap { display: flex; flex-direction: column; gap: 0; margin-top: 0.5rem; }
+  .roadmap-step { display: flex; gap: 1rem; align-items: flex-start; }
+  .roadmap-line-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 2px; }
+  .roadmap-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); border: 2px solid var(--navy); outline: 1px solid var(--teal); flex-shrink: 0; }
+  .roadmap-dot.dim { background: var(--navy-4); outline-color: var(--text-dim); }
+  .roadmap-connector { width: 1px; flex: 1; min-height: 20px; background: var(--border); margin: 3px 0; }
+  .roadmap-content { padding-bottom: 1.1rem; }
+  .roadmap-content strong { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+  .roadmap-content span { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* CONTACT */
+  .contact-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .contact-link { display: inline-flex; align-items: center; gap: 10px; background: var(--navy-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.5rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; transition: border-color 0.2s, background 0.2s; min-width: 200px; }
+  .contact-link:hover { border-color: var(--border-teal); background: var(--navy-3); }
+  .contact-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
+  .contact-val { font-size: 0.9rem; color: var(--text); }
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; position: relative; z-index: 1; }
+  footer p { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
+  footer span { color: var(--teal); }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding: 110px 0 70px; }
+    .hero-viz { display: none; }
+    .about-grid, .objective-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .project-detail-grid { grid-template-columns: 1fr; }
+    .cr-grid { grid-template-columns: 1fr 1fr; }
+    nav .nav-links { display: none; }
+  }
+  @media (max-width: 500px) {
+    .skills-grid, .cr-grid { grid-template-columns: 1fr; }
+    main { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Alin</div>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#skills">Compétences</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#stage">Alternance</a></li>
+    <li><a href="#objectif">Parcours</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-badge">Stagiaire chez BNP Paribas · GAM Restaurant</div>
+      <div class="hero-eyebrow">BUT Sciences des données · IUT Villetaneuse</div>
+      <h1>Alin-Dorin<br><span>PATA</span></h1>
+      <p class="hero-desc">
+        Étudiant en BUT Sciences des Données et alternant chez BNP Paribas. Je transforme les données en informations exploitables grâce à l'analyse statistique, la visualisation de données et le machine learning — avec une passion pour la Business Intelligence et l'analyse sportive.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <span class="hero-stat-num">20+</span>
+          <span class="hero-stat-label">Projets</span>
+        </div>
+        <div>
+          <span class="hero-stat-num">10+</span>
+          <span class="hero-stat-label">Outils maîtrisés</span>
+        </div>
+        <div>
+          <span class="hero-stat-num">4</span>
+          <span class="hero-stat-label">Langages</span>
+        </div>
+      </div>
+      <div class="hero-cta-row">
+        <a href="#projects" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Voir les projets
+        </a>
+        <a href="https://github.com/P-Alin/Projects" target="_blank" class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+    <div class="hero-viz">
+      <div class="viz-label">Python</div>
+      <div class="bar-track"><div class="bar-fill" style="width:90%;animation-delay:.1s"></div></div>
+      <div class="viz-label" style="margin-top:10px">SQL</div>
+      <div class="bar-track"><div class="bar-fill" style="width:82%;animation-delay:.25s"></div></div>
+      <div class="viz-label" style="margin-top:10px">R / Stats</div>
+      <div class="bar-track"><div class="bar-fill" style="width:75%;animation-delay:.4s"></div></div>
+      <div class="viz-label" style="margin-top:10px">Power BI</div>
+      <div class="bar-track"><div class="bar-fill" style="width:72%;animation-delay:.55s"></div></div>
+      <div class="viz-label" style="margin-top:10px">Machine Learning</div>
+      <div class="bar-track"><div class="bar-fill" style="width:68%;animation-delay:.7s"></div></div>
+      <div class="viz-label" style="margin-top:10px">HTML / JS / TS</div>
+      <div class="bar-track"><div class="bar-fill" style="width:60%;animation-delay:.85s"></div></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <span class="section-tag">01 · À propos</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h2>Présentation personnelle</h2>
+        <p>Je suisAlin-Dorin PATA, étudiant en BUT 2 Sciences des données à l'IUT de Villetaneuse, actuellement stagiaire chez BNP Paribas (GAM Restaurant). Passionné par les nouvelles technologies, j'ai choisi cette formation pour comprendre les données et les informations qu'elles transmettent dans un monde en pleine transformation numérique.</p>
+        <p>La formation me permet d'acquérir une expertise solide en analyse et gestion des données. Je suis formé à la programmation en Python, SQL et R, au traitement de données, à l'analyse statistique et à la valorisation de l'information.</p>
+        <p>En stage, j'ai développé des compétences concrètes : automatisation de flux de données, dashboards Power BI sur Azure, extraction NLP avec SpaCy, intégration d'API Météo-France et parsing de documents complexes (PDF, Excel).</p>
+        <div class="about-langs">
+          <span class="lang-chip">🇫🇷 Français C2</span>
+          <span class="lang-chip">🇷🇴 Roumain C2</span>
+          <span class="lang-chip">🇬🇧 Anglais B1</span>
+          <span class="lang-chip">🇮🇹 Italien A2</span>
+        </div>
+      </div>
+      <div class="interest-list">
+        <div class="interest-item">
+          <h4>Autonomie & Collaboration</h4>
+          <p>Gestion de projets, méthode RACI, expérience de chef d'équipe, adaptation rapide — projets en groupe de 2 à 6 personnes.</p>
+        </div>
+        <div class="interest-item">
+          <h4>Data Storytelling</h4>
+          <p>Vulgarisation de résultats complexes pour un public non-expert, présentation de KPI et dashboards interactifs. Communication orale et écrite.</p>
+        </div>
+        <div class="interest-item">
+          <h4>Bases de données & BI</h4>
+          <p>Maîtrise de PostgreSQL, Metabase et Power BI (Azure). Conception de modèles relationnels et visualisations interactives pour des données environnementales et commerciales.</p>
+        </div>
+        <div class="interest-item">
+          <h4>Analyse sportive</h4>
+          <p>Passion pour l'application de la data science au sport — notamment au football — avec un projet de carrière orienté vers la prédiction de performances et l'analyse comportementale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header">
+      <span class="section-tag">02 · Compétences</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Traiter</h3>
+        <ul>
+          <li>Python avancé, Pandas, NumPy</li>
+          <li>SQL, PostgreSQL, Power Query, ETL</li>
+          <li>HTML, CSS, JavaScript, TypeScript</li>
+          <li>Parsing Excel complexe, OCR PDF</li>
+          <li>NLP avec SpaCy</li>
+          <li>API (Météo-France)</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Analyser</h3>
+        <ul>
+          <li>Statistiques descriptives & inférence</li>
+          <li>Modélisation linéaire (R, Python)</li>
+          <li>Séries temporelles (ARIMA)</li>
+          <li>Data Mining</li>
+          <li>Matplotlib, Seaborn</li>
+          <li>Analyse de corrélations</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h3>Valoriser</h3>
+        <ul>
+          <li>Power BI (Azure), Tableau, Excel</li>
+          <li>KPI & Dashboarding</li>
+          <li>Data Storytelling, Reporting</li>
+          <li>Canva, Word, PowerPoint, SharePoint</li>
+          <li>Automatisation Google Drive</li>
+          <li>Communication résultats (soutenance)</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3>Modéliser</h3>
+        <ul>
+          <li>Machine Learning (Scikit-learn)</li>
+          <li>Classification, Clustering (K-Means, CAH)</li>
+          <li>ACP / Réduction dimensionnelle</li>
+          <li>Régression linéaire (Python, R)</li>
+          <li>Optimisation de modèles</li>
+          <li>Échantillonnage & stratification</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-tag">03 · Projets</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-list">
+
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p1')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-viz">Dataviz</span>
+              <span class="proj-tag tag-stats">Statistiques</span>
+              <span class="project-num">01</span>
+            </div>
+            <h3>Inégalités territoriales &amp; <span>parcours scolaire</span></h3>
+            <p class="project-summary">Concours Dataviz en groupe de 5. Étude de l'influence des inégalités économiques départementales sur la poursuite d'études des 15–29 ans en France, à partir de données INSEE enrichies du seuil de pauvreté par département.</p>
+          </div>
+          <div class="project-toggle" id="p1-toggle">+</div>
+        </div>
+        <div class="project-body" id="p1-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Fusion de plusieurs bases de données (INSEE + seuil de pauvreté + données territoriales), nettoyage et harmonisation avec Excel. Création de cartes choroplèthes et de diagrammes pour comparer Seine-Saint-Denis, La Réunion et Paris.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Résultat clé</h4>
+                <p>Les départements les plus pauvres présentent une proportion plus faible d'étudiants en études supérieures. Corrélation visuelle nette entre revenu médian et taux de poursuite d'études.</p>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Fusion et nettoyage de données multi-sources</li>
+                  <li>Analyse descriptive et identification de KPI</li>
+                  <li>Corrélation entre variables économiques et éducatives</li>
+                  <li>Data storytelling pour un public non-expert</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips">
+                  <span class="chip">Excel</span><span class="chip">INSEE data</span><span class="chip">Tableau</span><span class="chip">Cartographie</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p2')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-sql">SQL</span>
+              <span class="proj-tag tag-viz">Dataviz</span>
+              <span class="project-num">02</span>
+            </div>
+            <h3>Base de données <span>technologies bas carbone</span></h3>
+            <p class="project-summary">Conception complète d'une base de données relationnelle sur les flux commerciaux mondiaux liés aux technologies à faible empreinte carbone. Modélisation MCD, peuplement SQL, exploration via Metabase.</p>
+          </div>
+          <div class="project-toggle" id="p2-toggle">+</div>
+        </div>
+        <div class="project-body" id="p2-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Fusion de deux datasets FMI Climate Data sur les flux commerciaux. Conception d'un modèle entité-association. Création des tables et requêtes SQL sous PostgreSQL, puis analyse via Metabase.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Résultat clé</h4>
+                <p>Les échanges en technologies bas carbone sont concentrés en Amérique du Nord et en Europe. Les États-Unis, le Canada, la France et l'Allemagne sont les plus actifs.</p>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Modélisation entité-association (MCD)</li>
+                  <li>Création de tables et requêtes SQL</li>
+                  <li>Peuplement et gestion PostgreSQL</li>
+                  <li>Visualisation via Metabase</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips">
+                  <span class="chip">PostgreSQL</span><span class="chip">Metabase</span><span class="chip">SQL</span><span class="chip">FMI ClimateData</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p3')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-stats">Statistiques</span>
+              <span class="project-num">03</span>
+            </div>
+            <h3>Enquête : usage de l'IA <span>par les étudiants</span></h3>
+            <p class="project-summary">Étude en équipe de 4 sur l'utilisation de l'IA par les étudiants du campus de Villetaneuse. Collecte via QR code, nettoyage, stratification et estimation statistique.</p>
+          </div>
+          <div class="project-toggle" id="p3-toggle">+</div>
+        </div>
+        <div class="project-body" id="p3-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Questionnaire via QR code pendant deux semaines. Nettoyage, identification des biais, stratification par sexe, filière et année d'étude pour corriger les biais et affiner les estimations.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Résultats clés</h4>
+                <ul>
+                  <li>~27 % des étudiants se déclarent dépendants de l'IA</li>
+                  <li>Temps moyen d'utilisation : 1h30 par semaine</li>
+                  <li>L'année d'étude est le facteur le plus corrélé à l'usage</li>
+                </ul>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Plan de sondage et gestion des biais</li>
+                  <li>Post-stratification et redressement proportionnel</li>
+                  <li>Inférence statistique, intervalles de confiance 95 %</li>
+                  <li>Communication des résultats (soutenance)</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips">
+                  <span class="chip">R</span><span class="chip">Sphinx</span><span class="chip">Google Forms</span><span class="chip">Stratification</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p4')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-ts">Séries temporelles</span>
+              <span class="proj-tag tag-stats">Statistiques</span>
+              <span class="project-num">04</span>
+            </div>
+            <h3>Prédictions sur <span>séries chronologiques</span></h3>
+            <p class="project-summary">Analyse et prédictions sur des séries temporelles à composante saisonnière. Étude des taux de voyages des Français et modélisation avec ARIMA en binôme.</p>
+          </div>
+          <div class="project-toggle" id="p4-toggle">+</div>
+        </div>
+        <div class="project-body" id="p4-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Deux parties : analyse de séries à composante saisonnière, puis étude du modèle ARIMA. Application aux taux de voyages des Français pour identifier les tendances et saisonnalités, puis générer des prévisions.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Approches utilisées</h4>
+                <ul>
+                  <li>Décomposition de séries (tendance, saisonnalité, résidu)</li>
+                  <li>Modélisation ARIMA pour la prévision</li>
+                  <li>Évaluation de la qualité des prédictions</li>
+                </ul>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Analyse de séries temporelles avec saisonnalité</li>
+                  <li>Modélisation ARIMA</li>
+                  <li>Prévision et évaluation de modèles</li>
+                  <li>Visualisation des tendances temporelles</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips"><span class="chip">R</span><span class="chip">ARIMA</span><span class="chip">Forecasting</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOUVEAU PROJET 5 -->
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p5')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-py">Python</span>
+              <span class="project-num">05</span>
+            </div>
+            <h3>Gestion automatisée de <span>fiches clients</span></h3>
+            <p class="project-summary">Extraction, structuration et analyse de 357 fiches clients afin de produire une base de données exploitable et des rapports statistiques automatisés.</p>
+          </div>
+          <div class="project-toggle" id="p5-toggle">+</div>
+        </div>
+        <div class="project-body" id="p5-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Parsing automatisé de 357 fiches clients en format semi-structuré. Utilisation d'expressions régulières (Regex) pour extraire et normaliser les informations clés. Structuration en CSV et génération de rapports statistiques automatisés.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Résultats clés</h4>
+                <ul>
+                  <li>357 fiches traitées automatiquement sans intervention manuelle</li>
+                  <li>Base de données CSV structurée et exploitable</li>
+                  <li>Rapports statistiques descriptifs générés automatiquement</li>
+                </ul>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Extraction et parsing de données non-structurées</li>
+                  <li>Expressions régulières (Regex)</li>
+                  <li>Automatisation Python (scripting)</li>
+                  <li>Structuration CSV, statistiques descriptives</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips"><span class="chip">Python</span><span class="chip">Regex</span><span class="chip">CSV</span><span class="chip">Statistiques</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOUVEAU PROJET 6 -->
+      <div class="project-card">
+        <div class="project-header" onclick="toggleProject('p6')">
+          <div>
+            <div class="project-meta">
+              <span class="proj-tag tag-ml">Data Mining</span>
+              <span class="proj-tag tag-stats">Statistiques</span>
+              <span class="project-num">06</span>
+            </div>
+            <h3>Segmentation de <span>clients bancaires</span></h3>
+            <p class="project-summary">Analyse et classification de 8 950 détenteurs de cartes de crédit pour identifier différents profils financiers à l'aide de techniques de clustering (K-Means, CAH, ACP). Variance expliquée : 72,7 %.</p>
+          </div>
+          <div class="project-toggle" id="p6-toggle">+</div>
+        </div>
+        <div class="project-body" id="p6-body">
+          <div class="project-detail-grid">
+            <div>
+              <div class="detail-section">
+                <h4>Méthodologie</h4>
+                <p>Analyse de 4 variables clés : montant total achats, montant paiement, montant solde, limite crédit. K-Means (3 clusters), réduction dimensionnelle par ACP (2 composantes), validation par CAH.</p>
+              </div>
+              <div class="detail-section" style="margin-top:1.25rem">
+                <h4>Résultats clés</h4>
+                <ul>
+                  <li>8 950 clients analysés et segmentés en 3 profils distincts</li>
+                  <li>Variance expliquée par l'ACP : 72,7 %</li>
+                  <li>3 clusters financiers identifiés avec comportements caractéristiques</li>
+                </ul>
+              </div>
+              <a href="https://github.com/P-Alin/Projects" target="_blank" class="proj-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Voir sur GitHub
+              </a>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>Compétences mobilisées</h4>
+                <ul>
+                  <li>Clustering non-supervisé (K-Means, CAH)</li>
+                  <li>Réduction dimensionnelle (ACP)</li>
+                  <li>Visualisation et interprétation de clusters</li>
+                  <li>Analyse de profils financiers</li>
+                </ul>
+              </div>
+              <div style="margin-top:1.25rem">
+                <div class="detail-section"><h4>Outils</h4></div>
+                <div class="skill-chips"><span class="chip">R</span><span class="chip">K-Means</span><span class="chip">CAH</span><span class="chip">ACP</span><span class="chip">Scikit-learn</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STAGE / ALTERNANCE -->
+  <section id="stage">
+    <div class="section-header">
+      <span class="section-tag">04 · Stage BNP Paribas</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-company">
+          <div class="stage-logo">BNP</div>
+          <div class="stage-title">
+            <h3>Data Analyst — <span>GAM Restaurant</span></h3>
+            <p>BNP Paribas · Stage Data Analytics · Automatisation & Business Intelligence</p>
+          </div>
+        </div>
+        <span class="stage-badge">BUT 2</span>
+      </div>
+      <div class="cr-grid">
+        <div class="cr-item">
+          <div class="cr-label">CR 1</div>
+          <div class="cr-title">Data Extraction & Mapping</div>
+          <ul class="cr-bullets">
+            <li>Carte interactive (HTML / CSS / JS)</li>
+            <li>Filtres bâtiments & périodes</li>
+            <li>Analyse des couverts</li>
+            <li>Première exploration des données</li>
+          </ul>
+        </div>
+        <div class="cr-item">
+          <div class="cr-label">CR 2</div>
+          <div class="cr-title">Power BI & Data Visualisation</div>
+          <ul class="cr-bullets">
+            <li>Migration Power BI sur Azure</li>
+            <li>Dashboards interactifs</li>
+            <li>Analyse météo / couverts</li>
+            <li>Automatisation Google Drive</li>
+          </ul>
+        </div>
+        <div class="cr-item">
+          <div class="cr-label">CR 3</div>
+          <div class="cr-title">Automatisation & NLP</div>
+          <ul class="cr-bullets">
+            <li>Parsing Excel complexe</li>
+            <li>Extraction codes clients</li>
+            <li>SpaCy (noms & prénoms)</li>
+            <li>OCR PDF → Excel</li>
+          </ul>
+        </div>
+        <div class="cr-item">
+          <div class="cr-label">CR 4</div>
+          <div class="cr-title">Météo & NetB</div>
+          <ul class="cr-bullets">
+            <li>API Météo-France</li>
+            <li>Nettoyage données météo</li>
+            <li>Jointure datasets</li>
+            <li>Analyse corrélations météo/activité</li>
+          </ul>
+        </div>
+        <div class="cr-item">
+          <div class="cr-label">CR 5</div>
+          <div class="cr-title">Catalogue produit</div>
+          <ul class="cr-bullets">
+            <li>Extraction PDF multi-pages</li>
+            <li>Identification produits</li>
+            <li>Structuration Excel</li>
+            <li>Normalisation données</li>
+          </ul>
+        </div>
+        <div class="cr-item">
+          <div class="cr-label">CR 6</div>
+          <div class="cr-title">Frais de livraison</div>
+          <ul class="cr-bullets">
+            <li>Exctraction frais de livraison sur 2579 facture</li>
+            <li>Script automatisé par mots clés</li>
+            <li>Analyse des frais de livraions</li>
+            <li>Utilisation de la technologie OCR avec Python</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARCOURS & OBJECTIFS -->
+  <section id="objectif">
+    <div class="section-header">
+      <span class="section-tag">05 · Parcours & Objectifs</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="objective-grid">
+      <div class="obj-card">
+        <div class="obj-card-eyebrow">Feuille de route</div>
+        <h3>Du BUT à l'école d'ingénieurs en Data Science</h3>
+        <div class="roadmap">
+          <div class="roadmap-step">
+            <div class="roadmap-line-col"><div class="roadmap-dot"></div><div class="roadmap-connector"></div></div>
+            <div class="roadmap-content">
+              <strong>2024 — BUT 1 Sciences des données</strong>
+              <span>Statistiques, Python, SQL, Excel, Tableau, dashboards</span>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-line-col"><div class="roadmap-dot"></div><div class="roadmap-connector"></div></div>
+            <div class="roadmap-content">
+              <strong>2025 — BUT 2 Machine Learning & Data Science</strong>
+              <span>ACP, régression, K-means, séries temporelles, data mining, Python avancé</span>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-line-col"><div class="roadmap-dot"></div><div class="roadmap-connector"></div></div>
+            <div class="roadmap-content">
+              <strong>2026 — BUT 3 (Alternance BNP Paribas)</strong>
+              <span>Automatisation, OCR, NLP (SpaCy), API, Power BI, dashboards</span>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-line-col"><div class="roadmap-dot dim"></div><div class="roadmap-connector"></div></div>
+            <div class="roadmap-content">
+              <strong>2027–2029 — École d'ingénieurs en Data Science</strong>
+              <span>ML avancé, IA, big data, data engineering, data warehouse</span>
+            </div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-line-col"><div class="roadmap-dot dim"></div></div>
+            <div class="roadmap-content">
+              <strong>2029+ — Création d'entreprise dans la data</strong>
+              <span>Consulting data, data scientist, data engineer, IA appliquée</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-card-eyebrow">Objectifs professionnels</div>
+        <h3>Vision court terme & long terme</h3>
+        <div class="obj-sub-card">
+          <h4>Court terme</h4>
+          <ul class="obj-list">
+            <li>Finaliser mon BUT 3 en développant compétences et expérience en alternance</li>
+            <li>Approfondir mes compétences en ML, IA et Big Data</li>
+            <li>Maîtriser de nouveaux outils d'analyse et de visualisation</li>
+            <li>Réaliser davantage de projets variés pour renforcer mon profil</li>
+            <li>Gagner en autonomie sur des problématiques concrètes de data analysis</li>
+          </ul>
+        </div>
+        <div class="obj-sub-card">
+          <h4>Long terme</h4>
+          <ul class="obj-list">
+            <li>Intégrer une école d'ingénieurs spécialisée en Data Science</li>
+            <li>Développer des outils d'aide à la décision basés sur la data et l'IA</li>
+            <li>Approfondir mes connaissances en data engineering et IA avancée</li>
+            <li>Créer ma propre entreprise dans le domaine de la data et de l'IA</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding-bottom:100px; text-align:center">
+    <div class="section-header">
+      <span class="section-tag">06 · Contact</span>
+      <div class="section-line"></div>
+    </div>
+    <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:2.5rem; max-width:480px; margin-left:auto; margin-right:auto; line-height:1.75">
+      Une opportunité, un projet data ou simplement échanger sur l'analytics ? Mon inbox est ouverte.
+    </p>
+    <div class="contact-row">
+      <a href="mailto:alinpata20@gmail.com" class="contact-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <div>
+          <span class="contact-label">Email</span>
+          <span class="contact-val">alinpata20@gmail.com</span>
+        </div>
+      </a>
+      <a href="https://www.linkedin.com/in/alin-dorin-pata-4045a438a/" target="_blank" class="contact-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.75"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <div>
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-val">Alin-Dorin PATA</span>
+        </div>
+      </a>
+      <a href="https://github.com/P-Alin" target="_blank" class="contact-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.75"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <div>
+          <span class="contact-label">GitHub</span>
+          <span class="contact-val">Portfolio projets</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Alin-Dorin PATA · BUT Sciences des données · IUT Villetaneuse · Alternant <span>BNP Paribas</span> · <span>2026</span></p>
+</footer>
+
+<script>
+  function toggleProject(id) {
+    const body = document.getElementById(id + '-body');
+    const toggle = document.getElementById(id + '-toggle');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    toggle.classList.toggle('open', !isOpen);
+  }
+</script>
+</body>
+</html>
